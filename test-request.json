@@ -1,0 +1,7 @@
+{
+  "target": "test@example.com",
+  "type": "email",
+  "payload": {
+    "message": "Test job"
+  }
+}
