@@ -1,0 +1,57 @@
+name: PR Validation
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+      - 'hotfix/**'
+      - 'release/**'
+      - 'chore/**'
+      - 'docs/**'
+      - 'refactor/**'
+      - 'test/**'
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches:
+      - main
+      - develop
+
+jobs:
+  pr-title:
+    name: Conventional PR title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            refactor
+            docs
+            style
+            test
+            build
+            ci
+            perf
+            chore
+
+  commit-messages:
+    name: Commit message validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: commitlint.config.cjs
